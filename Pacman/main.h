@@ -10,10 +10,10 @@ class Ghost_Tester
 {
 public:
     Ghost_Tester();
+    ~Ghost_Tester();
     void run();
     
 private:
-    void check_pos(Point & pos);
     void ghost_commands(std::istringstream & iss, std::string const& command);
     bool is_scat() const;
     void set_scat(bool const arg);

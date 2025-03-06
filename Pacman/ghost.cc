@@ -18,6 +18,10 @@ Point Ghost::get_scatter_point() const
 
 void Ghost::set_position(Point const& new_pos)
 {
+    if (new_pos.x < 0 || new_pos.y < 0 || new_pos.x >= WIDTH || new_pos.y >= HEIGHT)
+    {
+         throw std::runtime_error("position outside valid range");
+    }
     pos = new_pos;
 }
 
@@ -30,6 +34,7 @@ void Ghost::update_pacman(Pacman const& pac)
 {
     pacman = pac;
 }
+
 // --------------------------------------------------------------------------
 // Blinky
 Blinky::Blinky(Pacman pacman, Point start_pos, Point scat_pos)
@@ -74,35 +79,31 @@ Pinky::Pinky(Pacman pacman, Point start_pos, Point scat_pos)
 
 Point Pinky::get_chase_point() const
 {
-    Point tmp{};
+    Point tmp = pacman.get_position();
 
-    if (pacman.get_direction().x == 0 && pacman.get_direction().y == 0) // Stilla
+    // Om Pacman rör sig i X-led
+    if (pacman.get_direction().x != 0)
     {
-        return pacman.get_position(); // Om pacman still => Pacmans pos = chase
+        if (pacman.get_direction().x == 1)  // Höger
+        {
+            tmp.x += 2;
+        }
+        else if (pacman.get_direction().x == -1)  // Vänster
+        {
+            tmp.x -= 2;
+        }
     }
-    else if (pacman.get_direction().x == -1 && pacman.get_direction().y == 0) // Vänster
+    // Om Pacman rör sig i Y-led
+    else if (pacman.get_direction().y != 0)
     {
-        tmp.x = pacman.get_position().x - 2;
-        tmp.y = pacman.get_position().y;
-    }
-    else if (pacman.get_direction().x == 1 && pacman.get_direction().y == 0) // Höger
-    {
-        tmp.x = pacman.get_position().x + 2;
-        tmp.y = pacman.get_position().y;
-    }
-    else if (pacman.get_direction().y == -1 && pacman.get_direction().x == 0) // Ner
-    {
-        tmp.y = pacman.get_position().y - 2;
-        tmp.x = pacman.get_position().x;
-    }
-    else if (pacman.get_direction().y == 1 && pacman.get_direction().x == 0) // Upp
-    {
-        tmp.y = pacman.get_position().y + 2;
-        tmp.x = pacman.get_position().x;
-    }
-    else
-    {
-        throw invalid_argument("Invalid direction!");
+        if (pacman.get_direction().y == 1)  // Upp
+        {
+            tmp.y += 2;
+        }
+        else if (pacman.get_direction().y == -1)  // Ner
+        {
+            tmp.y -= 2;
+        }
     }
     return tmp;
 }

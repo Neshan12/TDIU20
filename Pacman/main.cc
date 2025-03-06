@@ -10,10 +10,16 @@ Ghost_Tester::Ghost_Tester()
                              new Pinky {pacman, Point{3, 4}, Point{0, HEIGHT-1}},
                              new Clyde{pacman,  Point{4, 2}, Point{0, 0}, 6}}, scat{false}
 {
-    Point tmp{1, 1};
-    pacman.set_position(tmp);
-    tmp = {1, 0};
-    pacman.set_direction(tmp);
+    pacman.set_position(Point{1, 1});
+    pacman.set_direction(Point{1, 0});
+}
+
+Ghost_Tester::~Ghost_Tester()
+{
+    for (Ghost* const& ghost : ghost_list)
+    {
+        delete ghost;
+    }
 }
 
 void Ghost_Tester::run()
@@ -34,7 +40,6 @@ void Ghost_Tester::run()
         {
             Point new_pos {};
             iss >> new_pos.x >> new_pos.y;
-            check_pos(new_pos);
             pacman.set_position(new_pos);
         }
         else if (command == "dir")
@@ -68,18 +73,6 @@ void Ghost_Tester::run()
     }
 }
 
-void Ghost_Tester::check_pos(Point & pos)
-{
-    if (pos.x >= WIDTH)
-    {
-        pos.x = WIDTH-1;
-    }
-    if (pos.y >= HEIGHT)
-    {
-        pos.y = HEIGHT-1;
-    }
-}
-
 void Ghost_Tester::ghost_commands(istringstream & iss, string const& command)
 {
     for (Ghost* const& ghost : ghost_list)
@@ -88,7 +81,6 @@ void Ghost_Tester::ghost_commands(istringstream & iss, string const& command)
         {
             Point new_pos {};
             iss >> new_pos.x >> new_pos.y;
-            check_pos(new_pos);
             ghost->set_position(new_pos);
         }
     }
@@ -144,7 +136,6 @@ string Ghost_Tester::to_draw(Point const& curr_pos)
 void Ghost_Tester::draw_map()
 {
     cout << "+" << setfill('-') << setw(WIDTH * 2) << "-" << "+\n";
-
     for (int y {HEIGHT - 1}; y >= 0; --y) 
     {
         cout << "|";
@@ -154,10 +145,8 @@ void Ghost_Tester::draw_map()
         }
         cout << "|\n";
     }
-
     cout << "+" << setfill('-') << setw(WIDTH * 2) << "-" << "+" << endl;
 }
-
 
 
 
