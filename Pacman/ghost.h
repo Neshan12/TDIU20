@@ -23,9 +23,6 @@ protected:
     Point scat_pos;
 };
 
-
-
-
 class Blinky : public Ghost
 {
 public:
@@ -59,9 +56,6 @@ public:
 
 private:
     int n;
-    // Point pos;
-    // Point scat_pos;
-    // Pacman pacman;
 };
 
 #endif

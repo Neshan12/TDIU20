@@ -4,7 +4,6 @@
 
 using namespace std;
 
-
 // Ghost general
 Ghost::Ghost(Pacman pacman, Point start_pos, Point scat_pos)
     :   pacman{pacman}, pos{start_pos}, scat_pos{scat_pos}
@@ -115,7 +114,6 @@ string Pinky::get_color() const
 
 // --------------------------------------------------------------------------
 // Clyde
-
 Clyde::Clyde(Pacman pacman, Point start_pos, Point scat_pos, int n)
     :   Ghost(pacman, start_pos, scat_pos), n{n}
 {}

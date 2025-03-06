@@ -2,21 +2,8 @@
 #include <string>
 #include <iostream>
 #include <iomanip>
-#include <sstream>
 
 using namespace std;
-
-/*
-  Ledning och Tips:
-
-  - *Modifiera stukturen till en header-fil och en implementationsfil
-  - Ut�ka 'run()' och 'draw_map()' med �vrig funktionalitet.
-  - L�gg alla sp�ken i en l�mplig beh�llare som en datamedlem.
-  - Bryt ut stora kodblock till egna funktioner.
-  - Anv�nd hj�lpfunktioner f�r att undvika duplicering av kod.
-  - T�nk p� att varje funktion inte borde vara l�ngre �n 25 rader.
- */
-
 
 Ghost_Tester::Ghost_Tester()
     : pacman {}, ghost_list {new Blinky{pacman, Point{1, 5}, Point{WIDTH-1, HEIGHT-1}},
@@ -49,40 +36,35 @@ void Ghost_Tester::run()
             iss >> new_pos.x >> new_pos.y;
             check_pos(new_pos);
             pacman.set_position(new_pos);
-
         }
         else if (command == "dir")
         {
+            Point new_dir{};
+            iss >> new_dir.x >> new_dir.y;
+            pacman.set_direction(new_dir);
         }
         else if (command == "scatter")
         {
             set_scat(true);
         }
-        else if (command == "red")
+        else if (command == "chase")
         {
-            Point new_pos {};
-            iss >> new_pos.x >> new_pos.y;
-            check_pos(new_pos);
-            ghost_list.at(0)->set_position(new_pos);
+            set_scat(false);
         }
-        else if (command == "pink")
+        else if (command == "anger")
         {
-            Point new_pos {};
-            iss >> new_pos.x >> new_pos.y;
-            check_pos(new_pos);
-            ghost_list.at(1)->set_position(new_pos);
+            static_cast<Blinky*>(ghost_list.at(0))->set_angry(true);
         }
-        else if (command == "orange")
+        else if (command == "unanger")
         {
-            Point new_pos {};
-            iss >> new_pos.x >> new_pos.y;
-            check_pos(new_pos);
-            ghost_list.at(2)->set_position(new_pos);
+            static_cast<Blinky*>(ghost_list.at(0))->set_angry(false);
         }
         else if (command == "quit")
         {
             break;
         }
+        
+        ghost_commands(iss, command);
     }
 }
 
@@ -98,6 +80,20 @@ void Ghost_Tester::check_pos(Point & pos)
     }
 }
 
+void Ghost_Tester::ghost_commands(istringstream & iss, string const& command)
+{
+    for (Ghost* const& ghost : ghost_list)
+    {
+        if (command == ghost->get_color())
+        {
+            Point new_pos {};
+            iss >> new_pos.x >> new_pos.y;
+            check_pos(new_pos);
+            ghost->set_position(new_pos);
+        }
+    }
+}
+
 bool Ghost_Tester::is_scat() const
 {
     return scat;
@@ -106,10 +102,7 @@ void Ghost_Tester::set_scat(bool const arg)
 {
     scat = arg;
 }
-/*
-    En hj�lpfunktion som avg�r vilka tv� tecken som ska ritas ut f�r en given position p�
-    spelplanen.
-*/
+
 string Ghost_Tester::to_draw(Point const& curr_pos)
 {
     string to_draw{"  "};
@@ -119,50 +112,16 @@ string Ghost_Tester::to_draw(Point const& curr_pos)
 
         if (ghost->get_position() == curr_pos)
         {
-            if (ghost->get_color() == "red")
-            {
-                to_draw[1] = 'R';
-            }
-            else if (ghost->get_color() == "pink")
-            {
-                to_draw[1] = 'P';
-            }
-            else if (ghost->get_color() == "orange")
-            {
-                to_draw[1] = 'O';
-            }
+            to_draw[0] = toupper(ghost->get_color()[0]); 
         }
 
-        // Target
         if (ghost->get_chase_point() == curr_pos && is_scat() == false)
         {
-            if (ghost->get_color() == "red")
-            {
-                to_draw[0] = 'r';
-            }
-            else if (ghost->get_color() == "pink")
-            {
-                to_draw[1] = 'p';
-            }
-            else if (ghost->get_color() == "orange")
-            {
-                to_draw[1] = 'o';
-            }
+            to_draw[0] = tolower(ghost->get_color()[0]); 
         }
         else if (ghost->get_scatter_point() == curr_pos && is_scat() == true)
         {
-            if (ghost->get_color() == "red")
-            {
-                to_draw[0] = 'r';
-            }
-            else if (ghost->get_color() == "pink")
-            {
-                to_draw[1] = 'p';
-            }
-            else if (ghost->get_color() == "orange")
-            {
-                to_draw[1] = 'o';
-            }
+            to_draw[0] = tolower(ghost->get_color()[0]); 
         }
     }
 
