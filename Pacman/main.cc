@@ -5,6 +5,22 @@
 
 using namespace std;
 
+
+// Information om komplettering:
+//   Siffrorna hänvisar till rättningsprotokollet som finns på
+//   kurshemsidan -> läsning -> Literatur -> "Uppgruppens bedömningsprotokoll"
+//   Kompletteringen kan gälla hela filen och alla filer i labben,
+//   så får ni komplettering på en sak, kan samma sak förekomma på
+//   fler ställen utan att jag skrivit det.
+//
+//   Komplettering lämnas in via sendlab efter senast en (1) vecka
+//
+//   Har ni frågor om kompletteringen kan ni maila mig.
+
+// Komplettering: Kodupprepning i kommandona för pos, dir och flytta spöken.
+// Komplettering: Vi kan inte anta ordningen för spökena i listan
+
+
 Ghost_Tester::Ghost_Tester()
     : pacman {}, ghost_list {new Blinky{pacman, Point{1, 5}, Point{WIDTH-1, HEIGHT-1}},
                              new Pinky {pacman, Point{3, 4}, Point{0, HEIGHT-1}},
@@ -100,8 +116,6 @@ string Ghost_Tester::to_draw(Point const& curr_pos)
     string to_draw{"  "};
     for (Ghost* const& ghost : ghost_list)
     {
-        ghost->update_pacman(pacman);
-
         if (ghost->get_position() == curr_pos)
         {
             to_draw[0] = toupper(ghost->get_color()[0]); 
