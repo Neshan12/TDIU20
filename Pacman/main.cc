@@ -52,6 +52,43 @@ void Ghost_Tester::run()
         string command {};
         iss >> command;
 
+        if (command == "pos" || command == "dir")
+        {
+            update_pacman(command, iss);
+        }
+        else if (command == "scatter" || command == "chase")
+        {
+            set_scat(command == "scatter");
+        }
+        else if (command == "anger" || command == "unanger")
+        {
+            static_cast<Blinky*>(ghost_list.at(0))->set_angry(command == "anger");
+        }
+        else if (command == "quit")
+        {
+            break;
+        }
+        else
+        {
+            ghost_commands(iss, command);
+        }
+    }
+
+
+
+
+
+        /*
+        draw_map();
+        cout << "> ";
+
+        string line {};
+        getline(cin, line);
+        istringstream iss {line};
+    
+        string command {};
+        iss >> command;
+
         if (command == "pos")
         {
             Point new_pos {};
@@ -86,8 +123,28 @@ void Ghost_Tester::run()
         }
         
         ghost_commands(iss, command);
+        */
     }
 }
+
+
+void Ghost_Tester::update_pacman(const string& command, istringstream& iss)
+{
+    Point new_value{};
+    iss >> new_value.x >> new_value.y;
+    
+    if (command == "pos")
+    {
+        pacman.set_position(new_value);
+    }
+    else if (command == "dir")
+    {
+        pacman.set_direction(new_value);
+    }
+}
+
+
+
 
 void Ghost_Tester::ghost_commands(istringstream & iss, string const& command)
 {
