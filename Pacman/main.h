@@ -14,6 +14,8 @@ public:
     void run();
     
 private:
+    Ghost* get_ghost_by_color(std::string const& color);
+    void update_pacman(const std::string& command, std::istringstream& iss);
     void ghost_commands(std::istringstream & iss, std::string const& command);
     bool is_scat() const;
     void set_scat(bool const arg);

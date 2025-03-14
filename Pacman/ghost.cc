@@ -4,12 +4,40 @@
 
 using namespace std;
 
+
+// Information om komplettering:
+//   Siffrorna hänvisar till rättningsprotokollet som finns på
+//   kurshemsidan -> läsning -> Literatur -> "Uppgruppens bedömningsprotokoll"
+//   Kompletteringen kan gälla hela filen och alla filer i labben,
+//   så får ni komplettering på en sak, kan samma sak förekomma på
+//   fler ställen utan att jag skrivit det.
+//
+//   Komplettering lämnas in via sendlab efter senast en (1) vecka
+//
+//   Har ni frågor om kompletteringen kan ni maila mig.
+
+// -- Komplettering: konstruktorn behöver kontrollera att den inskickade positionen är inom spelplanen och informera anropande kod.
+
+// Kommentar: Pinky::get_chase_point() går att implementera utan if-satser.
+
 // Ghost general
-Ghost::Ghost(Pacman pacman, Point start_pos, Point scat_pos)
-    :   pacman{pacman}, pos{start_pos}, scat_pos{scat_pos}
-{}
+Ghost::Ghost(Pacman &pacman, Point const& start_pos, Point const& scat_point)
+    :   pacman{pacman}, pos{}, scat_pos{}
+{
+    set_position(start_pos);
+    check_pos(scat_point);
+    scat_pos = scat_point;
+}
 
 Ghost::~Ghost() {}
+
+void Ghost::check_pos(Point const& pos)
+{
+    if (pos.x < 0 || pos.y < 0 || pos.x >= WIDTH || pos.y >= HEIGHT)
+    {
+        throw std::runtime_error("position outside valid range");
+    }
+}
 
 Point Ghost::get_scatter_point() const
 {
@@ -18,10 +46,7 @@ Point Ghost::get_scatter_point() const
 
 void Ghost::set_position(Point const& new_pos)
 {
-    if (new_pos.x < 0 || new_pos.y < 0 || new_pos.x >= WIDTH || new_pos.y >= HEIGHT)
-    {
-         throw std::runtime_error("position outside valid range");
-    }
+    check_pos(new_pos);
     pos = new_pos;
 }
 
@@ -30,14 +55,9 @@ Point Ghost::get_position() const
     return pos;
 }
 
-void Ghost::update_pacman(Pacman const& pac)
-{
-    pacman = pac;
-}
-
 // --------------------------------------------------------------------------
 // Blinky
-Blinky::Blinky(Pacman pacman, Point start_pos, Point scat_pos)
+Blinky::Blinky(Pacman &pacman, Point const& start_pos, Point const& scat_pos)
     : Ghost(pacman, start_pos, scat_pos), angry{false} {}
 
 Point Blinky::get_chase_point() const
@@ -74,7 +94,7 @@ void Blinky::set_angry(bool const arg)
 
 // --------------------------------------------------------------------------
 // Pinky
-Pinky::Pinky(Pacman pacman, Point start_pos, Point scat_pos)
+Pinky::Pinky(Pacman &pacman, Point const& start_pos, Point const& scat_pos)
     : Ghost(pacman, start_pos, scat_pos) {}
 
 Point Pinky::get_chase_point() const
@@ -115,7 +135,7 @@ string Pinky::get_color() const
 
 // --------------------------------------------------------------------------
 // Clyde
-Clyde::Clyde(Pacman pacman, Point start_pos, Point scat_pos, int n)
+Clyde::Clyde(Pacman &pacman, Point const& start_pos, Point const& scat_pos, int n)
     :   Ghost(pacman, start_pos, scat_pos), n{n}
 {}
 

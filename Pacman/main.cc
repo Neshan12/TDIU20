@@ -17,8 +17,8 @@ using namespace std;
 //
 //   Har ni frågor om kompletteringen kan ni maila mig.
 
-// Komplettering: Kodupprepning i kommandona för pos, dir och flytta spöken.
-// Komplettering: Vi kan inte anta ordningen för spökena i listan
+// --Komplettering: Kodupprepning i kommandona för pos, dir och flytta spöken.
+// --Komplettering: Vi kan inte anta ordningen för spökena i listan
 
 
 Ghost_Tester::Ghost_Tester()
@@ -62,7 +62,11 @@ void Ghost_Tester::run()
         }
         else if (command == "anger" || command == "unanger")
         {
-            static_cast<Blinky*>(ghost_list.at(0))->set_angry(command == "anger");
+            Ghost* blinky = get_ghost_by_color("red");
+            if (blinky)
+            {
+                static_cast<Blinky*>(blinky)->set_angry(command == "anger");
+            }
         }
         else if (command == "quit")
         {
@@ -73,60 +77,19 @@ void Ghost_Tester::run()
             ghost_commands(iss, command);
         }
     }
-
-
-
-
-
-        /*
-        draw_map();
-        cout << "> ";
-
-        string line {};
-        getline(cin, line);
-        istringstream iss {line};
-    
-        string command {};
-        iss >> command;
-
-        if (command == "pos")
-        {
-            Point new_pos {};
-            iss >> new_pos.x >> new_pos.y;
-            pacman.set_position(new_pos);
-        }
-        else if (command == "dir")
-        {
-            Point new_dir{};
-            iss >> new_dir.x >> new_dir.y;
-            pacman.set_direction(new_dir);
-        }
-        else if (command == "scatter")
-        {
-            set_scat(true);
-        }
-        else if (command == "chase")
-        {
-            set_scat(false);
-        }
-        else if (command == "anger")
-        {
-            static_cast<Blinky*>(ghost_list.at(0))->set_angry(true);
-        }
-        else if (command == "unanger")
-        {
-            static_cast<Blinky*>(ghost_list.at(0))->set_angry(false);
-        }
-        else if (command == "quit")
-        {
-            break;
-        }
-        
-        ghost_commands(iss, command);
-        */
-    }
 }
 
+Ghost* Ghost_Tester::get_ghost_by_color(std::string const& color)
+{
+    for (Ghost* const& ghost : ghost_list)
+    {
+        if (ghost->get_color() == color)
+        {
+            return ghost;
+        }
+    }
+    return nullptr;
+}
 
 void Ghost_Tester::update_pacman(const string& command, istringstream& iss)
 {
@@ -142,8 +105,6 @@ void Ghost_Tester::update_pacman(const string& command, istringstream& iss)
         pacman.set_direction(new_value);
     }
 }
-
-
 
 
 void Ghost_Tester::ghost_commands(istringstream & iss, string const& command)
